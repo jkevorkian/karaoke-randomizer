@@ -84,24 +84,6 @@ export default function Reproductor({ estado, ir, refrescar, setContexto }) {
       </div>
 
       {error ? <div className="bloque"><Aviso color="var(--sangre)">{error}</Aviso></div> : null}
-
-      <div className="bloque">
-        <Aviso color="var(--cian)">
-          Si abortás, el tema vuelve a la bolsa y nadie queda marcado como que cantó.
-          Si terminó, pasás a cargar los tributos.
-        </Aviso>
-      </div>
-
-      {act.youtubeId ? (
-        <div className="bloque">
-          <Aviso color="var(--oro)">
-            ¿El recuadro quedó en negro o dice que el video no está disponible? Hay
-            karaokes que el canal no deja reproducir fuera de YouTube. Dale a
-            <b> Abrir en YouTube</b>, poné el video en pantalla completa allá, y cuando
-            termine volvé acá para marcar <b>Terminó</b>.
-          </Aviso>
-        </div>
-      ) : null}
     </>
   )
 }

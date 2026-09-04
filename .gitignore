@@ -4,3 +4,8 @@ dist
 .env.local
 .DS_Store
 *.log
+
+# Las 13 fotos originales. El repo es público: solo suben a GitHub las cinco
+# que la app realmente usa, en public/fotos/. Si querés versionar el resto,
+# sacá esta línea.
+fotos-originales/

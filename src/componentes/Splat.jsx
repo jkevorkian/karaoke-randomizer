@@ -46,6 +46,29 @@ function manchon(ctx, cx, cy, R, color, semilla) {
   }
 }
 
+/**
+ * El grano del papel, dibujado UNA vez adentro del mismo canvas.
+ * Antes era una capa fija a pantalla completa con un filtro SVG y
+ * mix-blend-mode, que obliga al navegador a recomponer toda la página en
+ * cada frame. Acá se rasteriza un mosaico chico y se estampa repetido.
+ */
+function grano(ctx, W, H, semilla) {
+  const lado = 96
+  const tela = document.createElement('canvas')
+  tela.width = tela.height = lado
+  const tc = tela.getContext('2d')
+  const img = tc.createImageData(lado, lado)
+  const r = conSemilla(semilla)
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = 120 + (r() - 0.5) * 110
+    img.data[i] = img.data[i + 1] = img.data[i + 2] = v
+    img.data[i + 3] = 30
+  }
+  tc.putImageData(img, 0, 0)
+  ctx.fillStyle = ctx.createPattern(tela, 'repeat')
+  ctx.fillRect(0, 0, W, H)
+}
+
 export default function Splat({ semilla = 1312, tenue = false }) {
   const lienzo = useRef(null)
 
@@ -53,11 +76,18 @@ export default function Splat({ semilla = 1312, tenue = false }) {
     const nodo = lienzo.current
     if (!nodo) return
     const padre = nodo.parentElement
+    let ultimoW = 0, ultimoH = 0, reloj = 0
 
     function pintar() {
       const caja = padre.getBoundingClientRect()
-      const W = caja.width, H = caja.height
+      const W = Math.round(caja.width), H = Math.round(caja.height)
       if (!W || !H) return
+      // Repintar cuesta miles de elipses. El alto del lienzo cambia cada vez
+      // que crece una lista, así que solo repintamos si de verdad cambió el
+      // tamaño de forma apreciable.
+      if (Math.abs(W - ultimoW) < 24 && Math.abs(H - ultimoH) < 80) return
+      ultimoW = W; ultimoH = H
+
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
       nodo.width = W * dpr; nodo.height = H * dpr
       const ctx = nodo.getContext('2d')
@@ -68,14 +98,20 @@ export default function Splat({ semilla = 1312, tenue = false }) {
       manchon(ctx, W * .33, H * .47, U * .30, '#0B0A09', semilla)
       manchon(ctx, W * .61, H * .49, U * .18, '#0B0A09', semilla + 909)
       manchon(ctx, W * .84, H * .74, U * .065, '#B0201A', semilla + 404)
+      grano(ctx, W, H, semilla + 7)
+    }
+
+    const pedir = () => {
+      clearTimeout(reloj)
+      reloj = setTimeout(pintar, 120)
     }
 
     pintar()
-    const observador = new ResizeObserver(pintar)
+    const observador = new ResizeObserver(pedir)
     observador.observe(padre)
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(pintar)
-    return () => observador.disconnect()
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(pedir)
+    return () => { clearTimeout(reloj); observador.disconnect() }
   }, [semilla])
 
-  return <canvas ref={lienzo} aria-hidden="true" style={{ opacity: tenue ? 0.18 : 1 }} />
+  return <canvas ref={lienzo} aria-hidden="true" style={{ opacity: tenue ? 0.2 : 1 }} />
 }

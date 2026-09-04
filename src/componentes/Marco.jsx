@@ -1,6 +1,9 @@
 import Splat from './Splat.jsx'
 
 export default function Marco({ semilla, children, pie = true }) {
+  // El grano ya no es una capa aparte con filtro SVG: se dibuja una sola vez
+  // dentro del canvas del manchón. Un filtro fijo a pantalla completa con
+  // mix-blend-mode obliga a recomponer la página entera en cada frame.
   return (
     <>
       <div className="lienzo">
@@ -17,15 +20,6 @@ export default function Marco({ semilla, children, pie = true }) {
             <div><span className="banda">La máquina que elige <i>quién canta</i></span></div>
           </div>
         ) : null}
-      </div>
-      <div className="grano" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg">
-          <filter id="grano-fx">
-            <feTurbulence type="fractalNoise" baseFrequency="0.82" numOctaves="4" stitchTiles="stitch" />
-            <feColorMatrix type="saturate" values="0" />
-          </filter>
-          <rect width="100%" height="100%" filter="url(#grano-fx)" opacity="0.55" />
-        </svg>
       </div>
     </>
   )

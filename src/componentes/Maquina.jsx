@@ -36,8 +36,10 @@ function armar(pool, ganador, animar) {
     l[1] = ganador
     return { lista: l, idx: 1 }
   }
+  // Cinco vueltas alcanzan de sobra para 1,5 s de giro y son la mitad de
+  // nodos que el navegador tiene que montar y volver a recorrer.
   let lista = []
-  for (let i = 0; i < 9; i++) lista = lista.concat(mezclar(pool))
+  for (let i = 0; i < 5; i++) lista = lista.concat(mezclar(pool))
   const idx = lista.length
   lista = lista.concat([ganador], relleno(mezclar(pool)))
   return { lista, idx }

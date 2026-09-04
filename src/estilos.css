@@ -45,8 +45,6 @@ a{color:var(--sangre)}
     radial-gradient(30% 26% at 88% 16%,rgba(90,70,40,.13),transparent 70%),
     radial-gradient(110% 84% at 50% 46%,transparent 52%,rgba(40,30,18,.42) 100%);
 }
-.grano{position:fixed;inset:0;z-index:70;pointer-events:none;opacity:.34;mix-blend-mode:overlay}
-.grano svg{width:100%;height:100%;display:block}
 .escena{
   position:relative;z-index:10;flex:1;
   width:100%;max-width:1220px;margin:0 auto;
@@ -121,9 +119,9 @@ a{color:var(--sangre)}
 .maquina{
   font-size:clamp(6.2px,1.05vw,10.4px);
   width:52em;max-width:100%;position:relative;
-  filter:drop-shadow(.9em 1.4em 0 rgba(11,10,9,.34));
 }
-.maquina.sacude{animation:sacudon .3s steps(1) 1}
+/* la clase la pone Maquina.jsx sobre .cuerpo, no sobre .maquina */
+.cuerpo.sacude{animation:sacudon .3s steps(1) 1}
 @keyframes sacudon{
   0%{transform:translate(0,0) rotate(0deg)}
   22%{transform:translate(-.55em,.3em) rotate(-.35deg)}
@@ -153,8 +151,8 @@ a{color:var(--sangre)}
   animation:parpadeo var(--dur,1.05s) steps(1) infinite var(--del,0s);
 }
 @keyframes parpadeo{
-  0%,44%{background:var(--oro);box-shadow:0 0 .9em .3em rgba(255,192,30,.75)}
-  45%,100%{background:#7A6A4A;box-shadow:none}
+  0%,44%{background-color:var(--oro)}
+  45%,100%{background-color:#7A6A4A}
 }
 .bulbo.quemada{animation:none;background:#5A5044}
 
@@ -363,25 +361,13 @@ table.tabla .num b{font-size:17px}
 .acciones{display:flex;gap:6px;flex-wrap:wrap}
 
 /* ================= RESPONSIVE ================= */
-@media (max-width:1060px){
-  .tapa{grid-template-columns:1fr;justify-items:center;gap:18px}
-  .foto.izq{display:none}
-  .foto.der{width:clamp(150px,42vw,280px);height:clamp(180px,44vw,300px)}
-  .menu{align-items:center;text-align:center}
-  .menu .nota{border-left:0;border-top:.42em solid var(--sangre);padding:.5em 0 0;text-align:center;max-width:34ch}
-  .maquina{font-size:clamp(6px,1.95vw,10.4px)}
-  .palanca{right:-3.4em}
-  .formulario,.tributos,.panel{grid-template-columns:1fr}
-}
-@media (max-width:520px){
-  .vid{grid-template-columns:92px 1fr}
-  .maquina{font-size:5.6px}
-  .boton{font-size:1.1rem}
-}
+
+
+
 @media (prefers-reduced-motion:reduce){
   .bulbo,.op[aria-current="true"]::before{animation:none!important}
   .bulbo{background:var(--oro)}
-  .ticket,.maquina.sacude{animation:none!important}
+  .ticket,.cuerpo.sacude{animation:none!important}
 }
 
 .foto.hueco{
@@ -451,7 +437,8 @@ a.boton.roja,a.boton.gris,a.boton.violeta{color:#FFF0E8}
   display:block;width:100%;height:100%;
   object-fit:cover;
   border:5px solid var(--tinta);
-  filter:contrast(1.14) saturate(1.18) brightness(1.04);
+  /* el contraste y la saturación vienen horneados en el archivo: un filter
+     acá obliga al navegador a rasterizar la imagen en una capa aparte */
   box-shadow:.45em .5em 0 rgba(11,10,9,.5);
   background:var(--papel-hi);
 }
@@ -474,3 +461,42 @@ a.boton.roja,a.boton.gris,a.boton.violeta{color:#FFF0E8}
 
 /* con foto de verdad, el hueco grande puede ser más alto */
 .foto.der{width:clamp(150px,20vw,272px);height:clamp(240px,42vw,430px)}
+
+/* ================= RESPONSIVE =================
+   Va al final a propósito: estas reglas tienen que ganarle por orden a
+   las medidas base de .foto.der y del gabinete, que se definen arriba. */
+@media (max-width:1060px){
+  /* Apilado en una sola columna, la foto grande caía a 880px de altura con
+     el pliegue en 768: desaparecía sin scrollear. Acá va al lado del menú. */
+  .tapa{
+    grid-template-columns:1fr auto;
+    grid-template-areas:"maq maq" "menu foto";
+    justify-items:center;align-items:start;gap:16px;min-height:0;
+  }
+  .maquina{grid-area:maq;margin-right:4.2em}
+  .menu{grid-area:menu;align-items:flex-start;text-align:left;padding-bottom:0;justify-self:start}
+  .foto.der{grid-area:foto;width:clamp(98px,20vw,164px);height:clamp(150px,30vw,236px);justify-self:end}
+  /* aire arriba para que la foto de la marquesina no quede cortada */
+  .escena{padding-top:clamp(52px,8vw,84px)}
+  .foto.izq{display:none}
+  /* En una notebook el problema no es el ancho sino el alto: si el gabinete
+     se come 500px, lo que va abajo queda fuera del pliegue. Por eso el tope
+     también mira vh. */
+  .maquina{font-size:min(clamp(6px,1.95vw,10.4px), 1.05vh)}
+  .palanca{right:-3.4em}
+  .formulario,.tributos,.panel{grid-template-columns:1fr}
+}
+
+@media (max-width:620px){
+  .escena{padding-top:clamp(64px,13vw,96px)}
+  .tapa{grid-template-columns:1fr;grid-template-areas:"maq" "foto" "menu"}
+  .menu{align-items:center;text-align:center;justify-self:center}
+  .menu .nota{border-left:0;border-top:.42em solid var(--sangre);padding:.5em 0 0;text-align:center;max-width:34ch}
+  .foto.der{width:clamp(130px,40vw,200px);height:clamp(190px,52vw,290px);justify-self:center}
+}
+
+@media (max-width:520px){
+  .vid{grid-template-columns:92px 1fr}
+  .maquina{font-size:5.6px}
+  .boton{font-size:1.1rem}
+}
