@@ -10,9 +10,13 @@ permissions:
   pages: write
   id-token: write
 
+# Una sola publicación a la vez, pero SIN cancelar la que está en curso: si
+# se corta a mitad de la subida del artefacto, la corrida siguiente se
+# encuentra con dos artefactos llamados "github-pages" y deploy-pages falla
+# con "Multiple artifacts were unexpectedly found".
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   construir:
