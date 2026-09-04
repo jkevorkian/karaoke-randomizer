@@ -206,7 +206,7 @@ const Maquina = forwardRef(function Maquina(
           ))}
         </div>
         <div className="placa">
-          <span className="bl n">Tragakaraoke</span>
+          <span className="bl n">Karaoke</span>
           <span className="s">Modelo Braian · serie 26</span>
         </div>
         <div className="lamparas abajo" aria-hidden="true">

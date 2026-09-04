@@ -87,7 +87,7 @@ a{color:var(--sangre)}
 }
 .banda i{font-style:normal;color:var(--oro)}
 .pie{position:relative;z-index:12;text-align:center;padding:6px 16px 18px;isolation:isolate}
-.pie .gold{font-size:clamp(26px,5.4vw,58px)}
+.pie .gold{font-size:clamp(30px,6.6vw,74px)}
 .pie .banda{font-size:clamp(9px,1.25vw,13px)}
 
 /* ================= PIEZAS ================= */
@@ -138,7 +138,7 @@ a{color:var(--sangre)}
   background:var(--tinta);padding:.7em 1em .8em;text-align:center;
   clip-path:polygon(6.5% 0,93.5% 0,99.4% 100%,.6% 100%);
 }
-.marquesina .placa .n{font-size:3.4em;display:inline-block}
+.marquesina .placa .n{font-size:3.4em;display:inline-block;letter-spacing:.15em;margin-right:-.15em}
 .marquesina .placa .s{
   display:block;font-family:"Martian Mono",monospace;font-size:.9em;font-weight:700;
   letter-spacing:.16em;color:var(--acero-hi);margin-top:.5em;text-transform:uppercase;
@@ -395,7 +395,12 @@ a.boton.roja,a.boton.gris,a.boton.violeta{color:#FFF0E8}
 /* logo: contorno y relleno como dos capas hermanas, para que el degradé no quede tapado */
 .gold{position:relative;display:inline-block;line-height:.86}
 .gold .capa{
-  font-family:Anton,sans-serif;text-transform:uppercase;letter-spacing:.005em;
+  font-family:Anton,sans-serif;text-transform:uppercase;
+  /* Se lee K A R A O K E, pero el texto sigue siendo una sola palabra: se
+     puede copiar, buscar, y un lector de pantalla no la deletrea.
+     El margen negativo compensa el espacio que sobra después de la última
+     letra, que si no descentra el logo. */
+  letter-spacing:.17em;margin-right:-.17em;
   transform:skewX(-7deg);display:block;white-space:nowrap;
 }
 .gold .borde{position:absolute;left:0;top:0;color:var(--tinta);-webkit-text-stroke:.14em var(--tinta);paint-order:stroke fill}

@@ -1,4 +1,4 @@
-# Tragakaraoke
+# Karaoke
 
 La máquina que elige quién canta en el cumple de Braian. Un tragamonedas
 con estética de Borderlands que sortea entre los anotados, arma los duetos

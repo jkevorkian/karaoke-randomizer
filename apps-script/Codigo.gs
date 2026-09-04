@@ -1,5 +1,5 @@
 /**
- * Tragakaraoke — backend de la planilla.
+ * Karaoke — backend de la planilla.
  *
  * Regla de oro: este script NUNCA borra ni sobrescribe una fila de datos.
  * Todo lo que pasa en la fiesta se agrega como fila nueva y el estado

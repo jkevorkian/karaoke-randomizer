@@ -13,9 +13,9 @@ export default function Marco({ semilla, children, pie = true }) {
         {pie ? (
           <div className="pie">
             <span className="gold">
-              <span className="capa sombra" aria-hidden="true">Tragakaraoke</span>
-              <span className="capa borde" aria-hidden="true">Tragakaraoke</span>
-              <span className="capa relleno">Tragakaraoke</span>
+              <span className="capa sombra" aria-hidden="true">Karaoke</span>
+              <span className="capa borde" aria-hidden="true">Karaoke</span>
+              <span className="capa relleno">Karaoke</span>
             </span>
             <div><span className="banda">La máquina que elige <i>quién canta</i></span></div>
           </div>
