@@ -17,7 +17,7 @@ export default function Marco({ semilla, children, pie = true }) {
               <span className="capa borde" aria-hidden="true">Karaoke</span>
               <span className="capa relleno">Karaoke</span>
             </span>
-            <div><span className="banda">La máquina que elige <i>quién canta</i></span></div>
+            <div><span className="banda">ajamti</span></div>
           </div>
         ) : null}
       </div>
