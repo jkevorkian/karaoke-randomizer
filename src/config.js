@@ -3,10 +3,18 @@ export const ID_PLANILLA =
   import.meta.env.VITE_ID_PLANILLA || '1OEiudcnjGCEe-rQsado3YlVUH5MzqOT4Z1b2_Gtmk8E'
 
 // URL del Apps Script publicado como aplicación web (termina en /exec).
-// Sin esto la app arranca en modo demo y no escribe nada.
-export const URL_SCRIPT = import.meta.env.VITE_URL_SCRIPT || ''
+//
+// Está acá, en el repo, y no en un secreto de GitHub, porque NO es un secreto:
+// se compila dentro del JavaScript que descarga cualquiera que abra el sitio,
+// y encima el Apps Script está publicado como "cualquier usuario". Guardarla
+// como secreto no escondía nada y hacía fallar el deploy si faltaba.
+// Se puede pisar con VITE_URL_SCRIPT si algún día cambia la implementación.
+export const URL_SCRIPT = import.meta.env.VITE_URL_SCRIPT ||
+  'https://script.google.com/macros/s/AKfycbwyp4Tq_8asJt327EY4q2xJTKeeB66agTaky2lSi4VFvjYs5xNOEBzHEsox50arbCamNg/exec'
 
-// Clave para entrar al panel de la fiesta. Cambiala antes del cumple.
+// Clave para entrar al panel de la fiesta. Tampoco es un secreto de verdad:
+// viaja en el bundle y un invitado curioso la puede leer. Sirve para que nadie
+// toque el Panel sin querer. No reutilices una contraseña.
 export const CLAVE_PANEL = import.meta.env.VITE_CLAVE_PANEL || 'braian'
 
 // Cada cuánto releemos la planilla mientras la app está abierta.

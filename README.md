@@ -82,9 +82,13 @@ hueco se oculta solo.
 ## Publicar
 
 Un push a `main` dispara el workflow de
-[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). Antes hay
-que habilitar Pages en **Settings → Pages → Source: GitHub Actions** y
-cargar los secretos `VITE_URL_SCRIPT` y `VITE_CLAVE_PANEL`.
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). Lo único que
+hay que configurar una vez es **Settings → Pages → Source: GitHub Actions**.
+
+La configuración vive en [`src/config.js`](src/config.js), no en secretos:
+los tres valores terminan compilados en el JavaScript público, así que
+guardarlos como secretos no escondía nada. Se pueden pisar con secretos del
+repositorio o con un `.env`, pero es opcional.
 
 ## Rutas
 

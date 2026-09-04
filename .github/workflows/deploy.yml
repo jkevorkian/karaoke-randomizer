@@ -18,35 +18,26 @@ jobs:
   construir:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      # Sin VITE_URL_SCRIPT la app se publica en modo demo: guarda en el
-      # navegador de cada uno y no escribe una sola fila en la planilla.
-      # Cortamos acá antes que descubrirlo en la fiesta.
-      - name: Comprobar los secretos
+      # Ninguno de estos valores es secreto: los tres terminan compilados
+      # dentro del JavaScript que descarga cualquiera que abra el sitio. Por
+      # eso viven en src/config.js y los secretos son solo para pisarlos.
+      # Este paso informa qué se usó, pero nunca corta el deploy.
+      - name: Qué configuración se usa
         env:
           URL_SCRIPT: ${{ secrets.VITE_URL_SCRIPT }}
           ID_PLANILLA: ${{ secrets.VITE_ID_PLANILLA }}
           CLAVE_PANEL: ${{ secrets.VITE_CLAVE_PANEL }}
         run: |
-          if [ -z "$URL_SCRIPT" ]; then
-            echo "::error::Falta el secreto VITE_URL_SCRIPT. Cargalo en Settings -> Secrets and variables -> Actions. Sin eso el sitio queda en modo demo y no guarda nada en la planilla."
-            exit 1
-          fi
-          case "$URL_SCRIPT" in
-            https://script.google.com/macros/s/*/exec) : ;;
-            *) echo "::error::VITE_URL_SCRIPT no parece la URL de una aplicación web de Apps Script. Tiene que terminar en /exec."; exit 1 ;;
-          esac
-          if [ -z "$ID_PLANILLA" ]; then
-            echo "::warning::No cargaste VITE_ID_PLANILLA. Se usa la planilla por defecto de src/config.js. Si cambiaste de planilla, el sitio publicado va a leer una y escribir en otra."
-          fi
-          if [ -z "$CLAVE_PANEL" ]; then
-            echo "::warning::No cargaste VITE_CLAVE_PANEL. El Panel queda con la clave por defecto."
-          fi
+          decir() { if [ -n "$2" ]; then echo "  $1: secreto del repo"; else echo "  $1: valor por defecto de src/config.js"; fi; }
+          decir VITE_URL_SCRIPT  "$URL_SCRIPT"
+          decir VITE_ID_PLANILLA "$ID_PLANILLA"
+          decir VITE_CLAVE_PANEL "$CLAVE_PANEL"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
       - run: npm run build
@@ -57,8 +48,20 @@ jobs:
           VITE_CLAVE_PANEL: ${{ secrets.VITE_CLAVE_PANEL }}
           VITE_CUMPLEANERO: ${{ secrets.VITE_CUMPLEANERO }}
 
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      # Si el sitio se publicara en modo demo, cada teléfono guardaría en su
+      # propio navegador y la planilla quedaría vacía toda la noche. Es lo
+      # único que sí corta el deploy, y ahora se comprueba sobre el build.
+      - name: Comprobar que no quedó en modo demo
+        run: |
+          if grep -rq 'script.google.com/macros' dist/assets/*.js; then
+            echo "  OK: el build apunta al Apps Script."
+          else
+            echo "::error::El build no tiene la URL del Apps Script. Se publicaría en modo demo y no guardaría nada en la planilla."
+            exit 1
+          fi
+
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
@@ -70,4 +73,4 @@ jobs:
       url: ${{ steps.pages.outputs.page_url }}
     steps:
       - id: pages
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

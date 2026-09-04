@@ -116,7 +116,12 @@ Copiá la URL que termina en `/exec`.
 
 ## 5. Configurar la app
 
-Creá un archivo `.env` en la raíz del repo (copiá `.env.example`):
+Los tres valores de configuración viven en
+[`src/config.js`](src/config.js) y ya apuntan a esta planilla y a este Apps
+Script, así que **no hace falta configurar nada para publicar**.
+
+Si algún día cambiás la implementación del script o la planilla, editá esos
+valores por defecto, o pisálos con un `.env` en la raíz (copiá `.env.example`):
 
 ```
 VITE_URL_SCRIPT=https://script.google.com/macros/s/AAAA.../exec
@@ -127,22 +132,29 @@ VITE_CLAVE_PANEL=la-clave-que-quieras
 Vite lee el `.env` **solo al arrancar**. Si lo creás o lo cambiás con
 `npm run dev` corriendo, cortalo y volvé a arrancarlo.
 
-Para GitHub Pages, cargá los mismos valores como **secretos del
-repositorio** en Settings → Secrets and variables → Actions:
-`VITE_URL_SCRIPT`, `VITE_ID_PLANILLA` y `VITE_CLAVE_PANEL`.
+> **Ninguno de los tres es un secreto de verdad.** Los tres terminan
+> compilados dentro del JavaScript que descarga cualquiera que abra el sitio,
+> y el Apps Script está publicado como "cualquier usuario". Por eso están en
+> el repo y no en secretos de GitHub: guardarlos como secretos no escondía
+> nada y hacía fallar el deploy cuando faltaban.
+>
+> Para GitHub Pages podés cargarlos igual como secretos del repositorio
+> (`VITE_URL_SCRIPT`, `VITE_ID_PLANILLA`, `VITE_CLAVE_PANEL`) si querés pisar
+> los valores por defecto sin tocar el código. Son opcionales.
+>
+> La clave del Panel sirve para que nadie lo toque sin querer, no para frenar
+> a alguien decidido. No reutilices una contraseña.
 
-> **Cargar un secreto no republica nada.** El sitio sigue sirviendo el build
-> anterior hasta el próximo push, o hasta que dispares el workflow a mano
-> desde la pestaña **Actions → Publicar en GitHub Pages → Run workflow**.
->
-> Si falta `VITE_URL_SCRIPT`, el build **falla a propósito** con un mensaje
-> que lo dice. Antes se publicaba en modo demo sin avisar y la fiesta entera
-> guardaba en el navegador de cada uno.
->
-> **`VITE_CLAVE_PANEL` no es un secreto de verdad.** Se compila dentro del
-> JavaScript que se descarga cualquiera que abra el sitio, así que un
-> invitado curioso la puede leer. Sirve para que nadie toque el Panel sin
-> querer, no para frenar a alguien decidido. No reutilices una contraseña.
+## Publicar en GitHub Pages
+
+Una sola cosa, y se hace una vez: **Settings → Pages → Build and deployment →
+Source: GitHub Actions** (viene en *Deploy from a branch*).
+
+Con eso, cada push a `main` publica solo. También se puede disparar a mano
+desde **Actions → Publicar en GitHub Pages → Run workflow**.
+
+> Si el sitio te devuelve `404` para `/src/main.jsx`, Pages sigue en modo
+> rama: está sirviendo el código fuente en vez del build.
 
 ## Comprobar que quedó bien
 
