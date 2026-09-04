@@ -1,0 +1,22 @@
+Fotos recortadas de Braian
+==========================
+
+Poné acá los PNG con fondo transparente. La app los busca por nombre exacto:
+
+  foto-01.png   Cuadrada. Va arriba de la marquesina de la máquina.
+                Recorte de la cara, mirando de frente. ~400x400.
+
+  foto-02.png   Vertical. Asoma arriba a la izquierda de la pantalla.
+                Cuerpo entero chico o busto. ~400x520.
+
+  foto-03.png   Vertical grande. Es la que sangra por el borde derecho,
+                como el psycho del launcher de Borderlands.
+                De la cintura para arriba, pose exagerada. ~700x1100.
+
+  foto-04.png   Cuadrada. Aparece en la pantalla de tributos.
+                Cara de aprobación o pulgar arriba. ~400x400.
+
+  foto-05.png   Cuadrada. Corona al primero del ranking. ~400x400.
+
+Si falta alguna, el hueco se oculta solo y no rompe nada.
+Formato: PNG con transparencia. Evitá JPG, el fondo blanco se nota.

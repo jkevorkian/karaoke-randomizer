@@ -1,0 +1,73 @@
+name: Publicar en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Sin VITE_URL_SCRIPT la app se publica en modo demo: guarda en el
+      # navegador de cada uno y no escribe una sola fila en la planilla.
+      # Cortamos acá antes que descubrirlo en la fiesta.
+      - name: Comprobar los secretos
+        env:
+          URL_SCRIPT: ${{ secrets.VITE_URL_SCRIPT }}
+          ID_PLANILLA: ${{ secrets.VITE_ID_PLANILLA }}
+          CLAVE_PANEL: ${{ secrets.VITE_CLAVE_PANEL }}
+        run: |
+          if [ -z "$URL_SCRIPT" ]; then
+            echo "::error::Falta el secreto VITE_URL_SCRIPT. Cargalo en Settings -> Secrets and variables -> Actions. Sin eso el sitio queda en modo demo y no guarda nada en la planilla."
+            exit 1
+          fi
+          case "$URL_SCRIPT" in
+            https://script.google.com/macros/s/*/exec) : ;;
+            *) echo "::error::VITE_URL_SCRIPT no parece la URL de una aplicación web de Apps Script. Tiene que terminar en /exec."; exit 1 ;;
+          esac
+          if [ -z "$ID_PLANILLA" ]; then
+            echo "::warning::No cargaste VITE_ID_PLANILLA. Se usa la planilla por defecto de src/config.js. Si cambiaste de planilla, el sitio publicado va a leer una y escribir en otra."
+          fi
+          if [ -z "$CLAVE_PANEL" ]; then
+            echo "::warning::No cargaste VITE_CLAVE_PANEL. El Panel queda con la clave por defecto."
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_URL_SCRIPT: ${{ secrets.VITE_URL_SCRIPT }}
+          VITE_ID_PLANILLA: ${{ secrets.VITE_ID_PLANILLA }}
+          VITE_CLAVE_PANEL: ${{ secrets.VITE_CLAVE_PANEL }}
+          VITE_CUMPLEANERO: ${{ secrets.VITE_CUMPLEANERO }}
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  publicar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - id: pages
+        uses: actions/deploy-pages@v4
