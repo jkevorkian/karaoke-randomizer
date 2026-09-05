@@ -161,7 +161,26 @@ const Maquina = forwardRef(function Maquina(
     const correr = (nodo, idx, fin) => {
       const alto = altoCasilla(nodo)
       if (!alto) { fin && fin(); return }
-      if (seco()) { colocar(nodo, idx, alto); fin && fin(); return }
+
+      if (seco()) {
+        // Con "reducir movimiento" activado el giro NO desaparece: es la
+        // respuesta a lo que la persona acaba de hacer, no un adorno. Lo que
+        // se saca son los tirones, la sacudida y el parpadeo. Queda un
+        // deslizamiento corto y suave de seis casillas.
+        const desde = Math.max(1, idx - 6)
+        nodo.style.transition = 'none'
+        nodo.style.transform = `translateY(${-(desde - 1) * alto}px)`
+        void nodo.offsetWidth
+        nodo.style.transition = 'transform .55s cubic-bezier(.2,.85,.25,1)'
+        colocar(nodo, idx, alto)
+        const suave = setTimeout(() => { nodo.style.transition = ''; clac(); fin && fin() }, 580)
+        limpiezas.current.push(() => { clearTimeout(suave); nodo.style.transition = '' })
+        return
+      }
+
+      // El camino normal escribe el transform a mano en cada tick, así que
+      // no puede quedar una transition puesta por el camino de arriba.
+      nodo.style.transition = ''
       const t0 = performance.now()
       let ultima = -1
       const reloj = setInterval(() => {

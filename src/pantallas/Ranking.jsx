@@ -20,7 +20,7 @@ export default function Ranking({ estado, ir }) {
           Todavía no cantó nadie. Apenas termine la primera actuación y le carguen los tributos, acá aparece la tabla.
         </Aviso>
       ) : (
-        <div className="tapa" style={{ gridTemplateColumns: '1fr auto', alignItems: 'start', minHeight: 0 }}>
+        <div className="podio">
           <div className="tabla-caja">
             <table className="tabla">
               <thead>
@@ -34,24 +34,22 @@ export default function Ranking({ estado, ir }) {
               <tbody>
                 {tabla.map((f, i) => (
                   <tr key={f.persona} style={{ '--c': COLORES[i] || 'var(--acero-lo)' }}>
-                    <td className="pos">{i + 1}º</td>
-                    <td className="nom">
+                    <td className="pos" data-etiqueta="Puesto">{i + 1}º</td>
+                    <td className="nom" data-etiqueta="Quién">
                       {f.persona}
                       {normalizar(f.persona) === normalizar(CUMPLEANERO)
                         ? <span className="pastilla" style={{ '--c': 'var(--perla)', marginLeft: 8 }}>El cumpleañero</span>
                         : null}
                     </td>
-                    <td className="num">{f.temas}</td>
-                    <td className="num"><b>{f.tributos}</b></td>
+                    <td className="num" data-etiqueta="Temas">{f.temas}</td>
+                    <td className="num" data-etiqueta="Tributos"><b>{f.tributos}</b></td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
 
-          <div style={{ width: 'clamp(120px,18vw,220px)' }}>
-            <Foto archivo="foto-05.jpg" clase="der" pista="corona al primero" enfoque="50% 24%" />
-          </div>
+          <Foto archivo="foto-05.jpg" clase="der corona" pista="corona al primero" enfoque="50% 24%" />
         </div>
       )}
     </>

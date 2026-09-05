@@ -505,3 +505,53 @@ a.boton.roja,a.boton.gris,a.boton.violeta{color:#FFF0E8}
   .maquina{font-size:5.6px}
   .boton{font-size:1.1rem}
 }
+
+/* ================= RANKING =================
+   Tiene layout propio: antes reusaba .tapa y en mobile heredaba las áreas
+   de grid del gabinete ("maq maq" / "menu foto"), que en esta pantalla no
+   existen, así que la tabla y la foto caían donde el navegador quería. */
+.podio{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;
+  gap:clamp(12px,2vw,24px);align-items:start;position:relative;z-index:12;
+}
+.podio .tabla-caja{min-width:0}
+/* La foto de la ruleta lleva grid-area:foto. En .podio esa área no existe y
+   el navegador inventa una columna extra, que dejaba la tabla a media
+   anchura. Acá vuelve a colocarse sola. */
+.foto.der.corona{
+  grid-area:auto;justify-self:auto;
+  width:clamp(112px,16vw,208px);height:clamp(170px,26vw,330px);
+}
+
+@media (max-width:760px){
+  /* En un teléfono la tabla no entra: cada fila pasa a ser una ficha y cada
+     dato lleva su etiqueta al lado, así no hace falta scrollear al costado. */
+  .podio{grid-template-columns:1fr}
+  .foto.der.corona{
+    grid-area:auto;justify-self:center;
+    width:clamp(120px,34vw,180px);height:clamp(170px,44vw,250px);
+  }
+  .tabla-caja{overflow-x:visible}
+  table.tabla{min-width:0;display:block}
+  table.tabla thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  table.tabla tbody,table.tabla tr{display:block}
+  table.tabla tr{
+    margin-bottom:8px;border:4px solid var(--tinta);
+    border-left-width:14px;border-left-color:var(--c,var(--acero-lo));
+    background:#F3EBDB;box-shadow:.4em .45em 0 rgba(11,10,9,.3);
+  }
+  table.tabla td{
+    display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    border:0;border-bottom:2px solid rgba(11,10,9,.16);
+    background:none;padding:7px 12px;text-align:left;
+  }
+  table.tabla tr td:first-child{border-left:0}
+  table.tabla tr td:last-child{border-bottom:0}
+  table.tabla td::before{
+    content:attr(data-etiqueta);
+    font-family:Anton,sans-serif;text-transform:uppercase;letter-spacing:.1em;
+    font-size:11px;color:#6A5E4E;flex:0 0 auto;
+  }
+  table.tabla .pos{width:auto;font-size:19px;color:var(--tinta)}
+  table.tabla .num{text-align:right}
+}
