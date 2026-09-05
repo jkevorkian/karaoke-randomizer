@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 're
 import { clac, premio } from '../audio.js'
 import { normalizar } from '../dominio.js'
 import { CUMPLEANERO } from '../config.js'
+import { reducido } from '../movimiento.js'
 import Foto from './Foto.jsx'
 
 export const SELLOS = {
@@ -10,7 +11,9 @@ export const SELLOS = {
   cumple: { clave: 'cumple', txt: 'Cumple', fondo: '#E8409B', tinta: '#FFF6E6' }
 }
 
-const seco = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+// Mira la decisión ya resuelta (sistema, o lo que se haya forzado desde el
+// Panel), no la preferencia del sistema a secas.
+const seco = () => reducido()
 const mezclar = (a) => { const l = a.slice(); for (let i = l.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [l[i], l[j]] = [l[j], l[i]] } return l }
 const esCumpleanero = (n) => normalizar(n) === normalizar(CUMPLEANERO)
 

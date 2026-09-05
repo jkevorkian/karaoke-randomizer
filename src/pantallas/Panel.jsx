@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Boton, Aviso, Pastilla } from '../componentes/piezas.jsx'
 import { registrarEvento, reiniciarDemo, HAY_BACKEND } from '../almacen.js'
 import { CLAVE_PANEL, ID_PLANILLA } from '../config.js'
+import { elegido, guardar, pideElSistema, resuelto } from '../movimiento.js'
 
 const reloj = (ms) => ms ? new Date(ms).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) : '—'
 
@@ -11,6 +12,8 @@ export default function Panel({ estado, ir, refrescar, ultima, setContexto }) {
   const [ocupado, setOcupado] = useState(false)
   const [error, setError] = useState('')
   const [nota, setNota] = useState('')
+  const [mov, setMov] = useState(elegido)
+  const cambiarMovimiento = (v) => { guardar(v); setMov(v) }
 
   if (!adentro) {
     return (
@@ -149,6 +152,28 @@ export default function Panel({ estado, ir, refrescar, ultima, setContexto }) {
         </div>
 
         <div>
+          <div className="chapa bloque">
+            <h3>Movimiento</h3>
+            <p className="sync" style={{ marginBottom: 8 }}>
+              <span className={'punto' + (resuelto() === 'completo' ? '' : ' rojo')} />
+              Ahora: {resuelto() === 'completo' ? 'animaciones completas' : 'animaciones reducidas'}
+            </p>
+            <p style={{ fontSize: 13, fontWeight: 600, color: '#4A4136', marginBottom: 10, lineHeight: 1.35 }}>
+              Tu sistema pide <b>{pideElSistema() ? 'reducir el movimiento' : 'movimiento normal'}</b>.
+              En Windows eso se enciende solo al apagar Accesibilidad → Efectos visuales →
+              Efectos de animación. Podés ignorarlo desde acá: la elección queda guardada
+              en este navegador.
+            </p>
+            <div className="acciones">
+              <Boton chico tono={mov === 'completo' ? '' : 'gris'}
+                onClick={() => cambiarMovimiento('completo')}>Completas</Boton>
+              <Boton chico tono={mov === 'reducido' ? 'roja' : 'gris'}
+                onClick={() => cambiarMovimiento('reducido')}>Reducidas</Boton>
+              <Boton chico tono={mov === 'auto' ? 'violeta' : 'gris'}
+                onClick={() => cambiarMovimiento('auto')}>Como el sistema</Boton>
+            </div>
+          </div>
+
           <div className="chapa bloque">
             <h3>Conexión</h3>
             <p className="sync">

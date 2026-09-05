@@ -364,11 +364,17 @@ table.tabla .num b{font-size:17px}
 
 
 
-@media (prefers-reduced-motion:reduce){
-  .bulbo,.op[aria-current="true"]::before{animation:none!important}
-  .bulbo{background:var(--oro)}
-  .ticket,.cuerpo.sacude{animation:none!important}
-}
+/* Quién decide el movimiento es src/movimiento.js, que estampa el atributo
+   en <html>. Por defecto sigue la preferencia del sistema, pero se puede
+   forzar desde el Panel: Windows enciende "reducir movimiento" solo con
+   apagar los efectos de animación, y la máquina quedaba muerta. */
+:root[data-movimiento="reducido"] .bulbo,
+:root[data-movimiento="reducido"] .op[aria-current="true"]::before,
+:root[data-movimiento="reducido"] .ticket,
+:root[data-movimiento="reducido"] .cuerpo.sacude,
+:root[data-movimiento="reducido"] .palanca.tirada .brazo,
+:root[data-movimiento="reducido"] .palanca.tirada .bola{animation:none!important}
+:root[data-movimiento="reducido"] .bulbo{background:var(--oro)}
 
 .foto.hueco{
   border:4px dashed var(--perla);background:rgba(232,64,155,.09);
