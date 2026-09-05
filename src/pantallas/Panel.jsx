@@ -159,18 +159,19 @@ export default function Panel({ estado, ir, refrescar, ultima, setContexto }) {
               Ahora: {resuelto() === 'completo' ? 'animaciones completas' : 'animaciones reducidas'}
             </p>
             <p style={{ fontSize: 13, fontWeight: 600, color: '#4A4136', marginBottom: 10, lineHeight: 1.35 }}>
-              Tu sistema pide <b>{pideElSistema() ? 'reducir el movimiento' : 'movimiento normal'}</b>.
-              En Windows eso se enciende solo al apagar Accesibilidad → Efectos visuales →
-              Efectos de animación. Podés ignorarlo desde acá: la elección queda guardada
-              en este navegador.
+              La máquina arranca con todo el movimiento puesto. Tu sistema pide
+              <b> {pideElSistema() ? 'reducir el movimiento' : 'movimiento normal'}</b>, y por
+              defecto lo ignoramos: en Windows esa preferencia se enciende sola al apagar
+              Accesibilidad → Efectos visuales → Efectos de animación, y la máquina quedaba
+              quieta. Si a alguien le molesta, acá se baja. Queda guardado en este navegador.
             </p>
             <div className="acciones">
               <Boton chico tono={mov === 'completo' ? '' : 'gris'}
                 onClick={() => cambiarMovimiento('completo')}>Completas</Boton>
               <Boton chico tono={mov === 'reducido' ? 'roja' : 'gris'}
                 onClick={() => cambiarMovimiento('reducido')}>Reducidas</Boton>
-              <Boton chico tono={mov === 'auto' ? 'violeta' : 'gris'}
-                onClick={() => cambiarMovimiento('auto')}>Como el sistema</Boton>
+              <Boton chico tono={mov === 'sistema' ? 'violeta' : 'gris'}
+                onClick={() => cambiarMovimiento('sistema')}>Como el sistema</Boton>
             </div>
           </div>
 
